@@ -31,6 +31,25 @@ app.get("/user/", async (req, res) => {
     console.log(err);
   }
 });
+// list  user with page=0&count=10
+app.get("/user", async (req, res) => {
+  try {
+    const sql = "select users from user LIMIT ? OFFSET ?";
+    const params = [req.query.count, req.query.page];
+    db.all(sql, params, (err, row) => {
+      if (err) {
+        return res.status(400).send("Error encountered while displaying");
+      }
+      console.log("user displayed successfully");
+      return res.status(200).json({
+        message: "users displayed successfully",
+        status: row,
+      });
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
 // list  user with id --- GET Method with id
 app.get("/user/:id", async (req, res) => {
   try {
