@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const db = require("./db.js");
 const format = require("./formatdate.js");
+const nodemailer = require("nodemailer");
 
 server.listen(3000, () => {
   console.log("Server listening on port: 3000");
@@ -77,6 +78,28 @@ app.post("/user/", bodyParser.json(), async (req, res) => {
         return res.status(400).send(err);
       }
       console.log("New user has been added");
+      var transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: "your email id",
+          pass: "your password",
+        },
+      });
+
+      var mailOptions = {
+        from: "your email id",
+        to: email,
+        subject: "Successfully Created Account",
+        text: "Account is Registerd",
+      };
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log("Email sent: " + info.response);
+        }
+      });
       return res.status(200).json({
         message: "New user has been added ",
         Name: first_name + last_name,
